@@ -49,12 +49,13 @@ class LRUCache:
         if key in self.cache:
             node = self.cache[key]
             node.value = (key, value)
-            self.storageList.move_to_front(node)
+            self.storageList.move_to_end(node)
         else:
             if self.node == self.limit:
-                del self.storageList.tail.value[0]
+                del self.cache[self.storageList.head.value[0]]
+                self.storageList.remove_from_head()
+                self.size -= 1
+                self.storageList.add_to_tail((key, value))
 
-                node = self.storageList.add_to_head((key, value))
-            else:
-                self.cache[key] = self.storageList.head
-                self.node += 1
+            self.cache[key] = self.storageList.tail
+            self.node += 1
